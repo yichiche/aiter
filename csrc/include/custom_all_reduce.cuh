@@ -3691,14 +3691,16 @@ class CustomAllreduce
         }
         if(call_1stage)
         {
-            blocks = std::min(kMaxBlocks,
-                              (size + (threads / world_size_) - 1) / (threads / world_size_));
+            blocks = std::max(1, std::min(kMaxBlocks,
+                                          (size + (threads / world_size_) - 1) /
+                                              (threads / world_size_)));
         }
         else if(call_2stage)
         {
-            blocks = std::min(kMaxBlocks,
-                              (size / world_size_ + (threads / world_size_) - 1) /
-                                  (threads / world_size_));
+            blocks = std::max(1, std::min(kMaxBlocks,
+                                          (size / world_size_ +
+                                           (threads / world_size_) - 1) /
+                                              (threads / world_size_)));
             if(world_size_ == 8 && bytes > 512 * 4096 * 2 &&
                arch.find("gfx942") != std::string::npos)
             {
